@@ -1,9 +1,11 @@
+#![allow(clippy::useless_conversion)]
+use base64::{engine::general_purpose, Engine as _};
 use pyo3::prelude::*;
-use base64::{Engine as _, engine::general_purpose};
 
 /// Derive a cursor from timestamp and event ID.
 /// Format: base64url(timestamp:event_id)
 #[pyfunction]
+#[allow(clippy::useless_conversion)]
 fn derive_cursor(timestamp: u64, event_id: &str) -> PyResult<String> {
     let payload = format!("{}:{}", timestamp, event_id);
     // Use URL_SAFE_NO_PAD for standard "base64url"
