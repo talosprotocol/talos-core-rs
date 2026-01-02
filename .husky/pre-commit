@@ -1,0 +1,12 @@
+#!/bin/sh
+echo "🔍 Running pre-commit validation..."
+
+# Note: Empty Rust project - add tests when implemented
+echo "Checking for Cargo.toml..."
+if [ -f "Cargo.toml" ]; then
+    cargo check || { echo "❌ Cargo check failed"; exit 1; }
+    cargo fmt -- --check || { echo "❌ Format check failed"; exit 1; }
+    cargo clippy -- -D warnings || { echo "❌ Clippy failed"; exit 1; }
+fi
+
+echo "✅ All pre-commit checks passed"
