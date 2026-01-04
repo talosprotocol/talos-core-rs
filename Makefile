@@ -1,36 +1,34 @@
-# talos-core-rs Makefile
+# Universal Makefile Interface
+all: install lint test build conformance
 
-.PHONY: build test conformance clean doctor start stop
+install:
+	cargo fetch
 
-# Default target
-all: build test
+typecheck:
+	cargo check
 
-build:
-	@echo "Building Rust kernel..."
-	cargo build --release
+lint:
+	# Style + Types (Fail on error)
+	cargo clippy --all-targets -- -D warnings
+
+format:
+	# Auto-fix style
+	cargo fmt
 
 test:
-	@echo "Running tests..."
+	# Unit tests
 	cargo test
 
-# Mapped to test for now as Rust tests include vector verification if implemented
 conformance:
-	@echo "Running conformance tests..."
-	cargo test
+	# Run conformance vectors
+	@if [ -z "$(RELEASE_SET)" ]; then \
+		echo "Skipping conformance (No RELEASE_SET provided)"; \
+	else \
+		cargo test --test conformance -- --vectors $(RELEASE_SET); \
+	fi
 
-doctor:
-	@echo "Checking environment..."
-	@cargo --version || echo "Cargo missing"
-	@rustc --version || echo "Rustc missing"
+build:
+	cargo build --release
 
 clean:
-	@echo "Cleaning..."
 	cargo clean
-	rm -rf target
-
-# Scripts wrapper
-start:
-	@./scripts/start.sh
-
-stop:
-	@./scripts/stop.sh
