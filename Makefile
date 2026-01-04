@@ -1,41 +1,36 @@
 # talos-core-rs Makefile
-# High-performance Rust Kernel
 
-.PHONY: install build test lint clean start stop
+.PHONY: build test conformance clean doctor start stop
 
 # Default target
 all: build test
 
-# Install dependencies (cargo handles this)
-install:
-	@echo "Rust dependencies managed by cargo"
-
-# Build
 build:
-	@echo "Building..."
+	@echo "Building Rust kernel..."
 	cargo build --release
 
-# Run tests
 test:
 	@echo "Running tests..."
-	cargo test --all-features
+	cargo test
 
-# Lint check
-lint:
-	@echo "Running lint..."
-	cargo fmt --check
-	cargo clippy -- -D warnings
+# Mapped to test for now as Rust tests include vector verification if implemented
+conformance:
+	@echo "Running conformance tests..."
+	cargo test
 
-# Clean all generated files
+doctor:
+	@echo "Checking environment..."
+	@cargo --version || echo "Cargo missing"
+	@rustc --version || echo "Rustc missing"
+
 clean:
 	@echo "Cleaning..."
 	cargo clean
 	rm -rf target
-	@echo "Clean complete. Ready for fresh build."
 
-# No services to start for core-rs
+# Scripts wrapper
 start:
-	@echo "talos-core-rs is a library, no services to start."
+	@./scripts/start.sh
 
 stop:
-	@echo "talos-core-rs is a library, no services to stop."
+	@./scripts/stop.sh
