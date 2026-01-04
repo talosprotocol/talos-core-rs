@@ -14,7 +14,7 @@ The security of the Talos Protocol relies on the correct implementation of the D
 graph TD
     Kernel[Talos Core (Rust)]
     
-    subgraph "Bindings"
+    subgraph Bindings_Layer[Bindings]
         Py[Python Bindings]
         Node[Node.js Bindings]
     end
