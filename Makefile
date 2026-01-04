@@ -17,7 +17,15 @@ format:
 
 test:
 	# Unit tests
-	cargo test
+	cargo test --no-default-features
+
+coverage:
+	# Run coverage report
+	cargo tarpaulin --no-default-features --out Xml --output-dir coverage/
+
+coverage-check:
+	# Enforce 80% threshold
+	cargo tarpaulin --no-default-features --fail-under 80
 
 conformance:
 	# Run conformance vectors

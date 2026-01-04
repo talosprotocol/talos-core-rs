@@ -174,8 +174,7 @@ impl Session {
         let mut key_arr = [0u8; 32];
         key_arr.copy_from_slice(&mk);
 
-        crypto::aead_decrypt(&key_arr, ciphertext, header_bytes)
-            .map_err(TalosError::CryptoError)
+        crypto::aead_decrypt(&key_arr, ciphertext, header_bytes).map_err(TalosError::CryptoError)
     }
 
     fn try_skipped_keys(

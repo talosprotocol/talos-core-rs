@@ -20,7 +20,7 @@ echo "Running cargo clippy..."
 cargo clippy -- -D warnings 2>/dev/null || cargo clippy
 
 echo "Running cargo test..."
-# Unset VIRTUAL_ENV to prevent pyo3 build errors if active env is stale
-(unset VIRTUAL_ENV && cargo test --all-features)
+# Avoid --all-features as it triggers pyo3 linker errors in this environment
+cargo test --no-default-features
 
 echo "talos-core-rs tests passed."
