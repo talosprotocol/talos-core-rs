@@ -107,7 +107,7 @@ impl RatchetHandler {
                 key_type: "x25519".to_string(),
             },
             dh_remote: Some(spk_pub),
-            root_key: root_key,
+            root_key,
             chain_key_send: Some(ck_send),
             chain_key_recv: None,
             send_count: 0,
