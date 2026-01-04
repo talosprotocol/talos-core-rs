@@ -5,16 +5,18 @@
 
 #![allow(clippy::useless_conversion)]
 
-mod canonical;
-mod crypto;
-mod encoding;
-mod errors;
-mod wallet;
+pub mod canonical;
+pub mod crypto;
+pub mod encoding;
+pub mod errors;
+pub mod ratchet;
+pub mod wallet;
 
 pub use canonical::*;
 pub use crypto::*;
 pub use encoding::*;
 pub use errors::*;
+pub use ratchet::*;
 pub use wallet::*;
 
 use pyo3::prelude::*;

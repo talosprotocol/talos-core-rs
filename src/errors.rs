@@ -40,33 +40,25 @@ impl TalosErrorCode {
 
 /// Talos error type.
 #[derive(Debug, Error)]
-#[error("{code}: {message}")]
-pub struct TalosError {
-    code: TalosErrorCode,
-    message: String,
+pub enum TalosError {
+    #[error("TALOS_DENIED: {0}")]
+    Denied(String),
+    #[error("TALOS_INVALID_CAPABILITY: {0}")]
+    InvalidCapability(String),
+    #[error("TALOS_PROTOCOL_MISMATCH: {0}")]
+    ProtocolMismatch(String),
+    #[error("TALOS_FRAME_INVALID: {0}")]
+    FrameInvalid(String),
+    #[error("TALOS_CRYPTO_ERROR: {0}")]
+    CryptoError(String),
+    #[error("TALOS_INVALID_INPUT: {0}")]
+    InvalidInput(String),
+    #[error("TALOS_TRANSPORT_TIMEOUT: {0}")]
+    TransportTimeout(String),
+    #[error("TALOS_TRANSPORT_ERROR: {0}")]
+    TransportError(String),
+    #[error("TALOS_RATCHET_ERROR: {0}")]
+    RatchetError(String),
 }
 
-impl TalosError {
-    /// Create a new error.
-    pub fn new(code: TalosErrorCode, message: impl Into<String>) -> Self {
-        Self {
-            code,
-            message: message.into(),
-        }
-    }
-
-    /// Get the error code.
-    pub fn code(&self) -> TalosErrorCode {
-        self.code
-    }
-
-    /// Get the error code string.
-    pub fn code_str(&self) -> &'static str {
-        self.code.as_str()
-    }
-
-    /// Get the message.
-    pub fn message(&self) -> &str {
-        &self.message
-    }
-}
+pub type TalosResult<T> = Result<T, TalosError>;
