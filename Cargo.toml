@@ -4,6 +4,12 @@ version = "0.1.0"
 edition = "2021"
 description = "Talos Protocol Core Rust Kernel"
 
+[package.metadata.talos]
+protocol_range = "^1.0.0"
+contract_hash = "qiLECQWBPF0mu7krXDT8ZTECTy-FQnLmTczQp9SRb08"
+schedule_hash = "Q_hvsAzI46oi8yZZjtqsbSab1ZFaUnAf6wCvsd5Ey0k"
+contracts_version = "1.0.0"
+
 [lib]
 name = "talos_core_rs"
 crate-type = ["cdylib", "rlib"]
