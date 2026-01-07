@@ -14,7 +14,7 @@ The security of the Talos Protocol relies on the correct implementation of the D
 
 ```mermaid
 graph TD
-    Kernel[Talos Core (Rust)]
+    Kernel["Talos Core (Rust)"]
 
     subgraph Bindings_Layer[Bindings]
         Py[Python Bindings]
