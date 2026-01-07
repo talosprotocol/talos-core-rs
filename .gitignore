@@ -26,3 +26,11 @@ Thumbs.db
 *.pdb
 conformance.xml
 junit.xml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.python-version
+venv/
+.venv/

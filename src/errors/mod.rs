@@ -59,6 +59,10 @@ pub enum TalosError {
     TransportError(String),
     #[error("TALOS_RATCHET_ERROR: {0}")]
     RatchetError(String),
+    #[error("TALOS_PROTOCOL_ERROR: {0}")]
+    Protocol(String),
+    #[error("TALOS_SERIALIZATION_ERROR: {0}")]
+    Serialization(String),
 }
 
 pub type TalosResult<T> = Result<T, TalosError>;

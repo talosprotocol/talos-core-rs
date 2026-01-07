@@ -13,10 +13,11 @@ contracts_version = "1.0.0"
 
 [lib]
 name = "talos_core_rs"
+path = "src/libs/lib.rs"
 crate-type = ["cdylib", "rlib"]
 
 [features]
-default = ["extension-module"]
+default = []
 extension-module = ["pyo3/extension-module"]
 
 [dependencies]
