@@ -1,0 +1,85 @@
+{
+  "title": "Ratchet Golden Trace (Reference)",
+  "description": "Trace generated from src/core/session.py with normalized encoding.",
+  "alice": {
+    "identity_public": "EDC4yqS9rJWoqrnmR9T24TVpX4NfqNkeoX3NDC-SwvM",
+    "identity_private": "ycPjUCVI9ctfhqau8hlmHSDo_17XS5MV1ZujmHqMWWg",
+    "ephemeral_private": "2N4czt7AZRLm9CmTbo2FPL77rwxOnC8Aq45uDSnqbXE"
+  },
+  "bob": {
+    "identity_public": "E80vGn1T8vhm2dystAQ5VBKzpbXf8_zf98es-RuGZkw",
+    "identity_private": "YKGriHH1oHqqtWLCUfDqEBeoYG8i3298EnmZUzIy7e0",
+    "prekey_bundle": {
+      "identity_key": "E80vGn1T8vhm2dystAQ5VBKzpbXf8_zf98es-RuGZkw",
+      "signed_prekey": "ZPLNJFKa-PyNyrhA0PD9KAd_2KMiPfzkZe9hz9e6xnc",
+      "prekey_signature": "aubPCBHtdqGqq7vBOSFzLl4o5FFfO4jUaTVPtVO3mJ9Q2cYmd9SSQ7kEkwFDADLJqB2Uk66xcciuW1r4rD4lCA",
+      "one_time_prekey": null
+    },
+    "bundle_secrets": {
+      "signed_prekey_private": "OM7eZuUYF0K0iSccFg_9doJbna0fDQNimjhYwHDQz1k"
+    }
+  },
+  "steps": [
+    {
+      "step": 1,
+      "action": "encrypt",
+      "actor": "alice",
+      "description": "Alice sends first message (X3DH implicit)",
+      "plaintext": "SGVsbG8gQm9i",
+      "header": {
+        "dh": "ZS08FeNGY32XUEKJQa0P1Wf_skkb4DUGu9Issoincno",
+        "pn": 0,
+        "n": 0
+      },
+      "nonce": "FVLJMXyn0WwNTFWg",
+      "ciphertext": "ysSkGTG1Ly0GtewALcAE6s-_9_v5ywmqQA",
+      "aad": "eyJkaCI6IlpTMDhGZU5HWTMyWFVFS0pRYTBQMVdmX3Nra2I0RFVHdTlJc3NvaW5jbm8iLCJwbiI6MCwibiI6MH0"
+    },
+    {
+      "step": 2,
+      "action": "decrypt",
+      "actor": "bob",
+      "description": "Bob receives first message",
+      "ciphertext": "ysSkGTG1Ly0GtewALcAE6s-_9_v5ywmqQA",
+      "header": {
+        "dh": "ZS08FeNGY32XUEKJQa0P1Wf_skkb4DUGu9Issoincno",
+        "pn": 0,
+        "n": 0
+      },
+      "nonce": "FVLJMXyn0WwNTFWg",
+      "aad": "eyJkaCI6IlpTMDhGZU5HWTMyWFVFS0pRYTBQMVdmX3Nra2I0RFVHdTlJc3NvaW5jbm8iLCJwbiI6MCwibiI6MH0",
+      "expected_plaintext": "SGVsbG8gQm9i"
+    },
+    {
+      "step": 3,
+      "action": "encrypt",
+      "actor": "bob",
+      "description": "Bob replies (Ratchet turn)",
+      "plaintext": "SGkgQWxpY2U",
+      "header": {
+        "dh": "VFtczozV92Y8x48qDBoenvPgTb3BlQKRp8DEnQFZDTo",
+        "pn": 0,
+        "n": 0
+      },
+      "nonce": "UfGw1C9wXyRoWJT3",
+      "ciphertext": "yasbyL7yB0K1RR3pWGjM_UQcJ8QPoyTA",
+      "aad": "eyJkaCI6IlZGdGN6b3pWOTJZOHg0OHFEQm9lbnZQZ1RiM0JsUUtScDhERW5RRlpEVG8iLCJwbiI6MCwibiI6MH0",
+      "ratchet_priv": "ULDSDXq8V9_QeEiYeDmG1su671xhnEU64CWP1RjoEFU"
+    },
+    {
+      "step": 4,
+      "action": "decrypt",
+      "actor": "alice",
+      "description": "Alice receives reply",
+      "ciphertext": "yasbyL7yB0K1RR3pWGjM_UQcJ8QPoyTA",
+      "header": {
+        "dh": "VFtczozV92Y8x48qDBoenvPgTb3BlQKRp8DEnQFZDTo",
+        "pn": 0,
+        "n": 0
+      },
+      "nonce": "UfGw1C9wXyRoWJT3",
+      "aad": "eyJkaCI6IlZGdGN6b3pWOTJZOHg0OHFEQm9lbnZQZ1RiM0JsUUtScDhERW5RRlpEVG8iLCJwbiI6MCwibiI6MH0",
+      "expected_plaintext": "SGkgQWxpY2U"
+    }
+  ]
+}

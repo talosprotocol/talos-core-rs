@@ -1,6 +1,5 @@
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use serde_json::Value;
-use std::fs;
 use talos_core_rs::adapters::crypto::RealCryptoProvider;
 use talos_core_rs::domain::ratchet::{self, KeyPair, Session, SessionManager};
 use talos_core_rs::ports::crypto::CryptoProvider;
@@ -249,9 +248,7 @@ fn kdf_rk(rk: &[u8], dh_out: &[u8], provider: &impl CryptoProvider) -> (Vec<u8>,
 
 #[test]
 fn test_roundtrip_basic() {
-    let content =
-        fs::read_to_string("../talos-contracts/test_vectors/sdk/ratchet/roundtrip_basic.json")
-            .expect("Failed to read vector");
+    let content = include_str!("vectors/roundtrip_basic.json");
     let trace: Value = serde_json::from_str(&content).unwrap();
     let mut handler = RatchetHandler::new();
     handler.run_trace(&trace).expect("Trace failed");
