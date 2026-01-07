@@ -41,11 +41,9 @@ jobs:
       - name: Create DMG (macOS only)
         if: matrix.os == 'macos-latest'
         run: |
-          npm install -g create-dmg
           mkdir -p dist
           cp target/release/talos-cli dist/
-          create-dmg dist/talos-cli dist/ || true
-          mv *.dmg talos-cli-macos-amd64.dmg
+          hdiutil create -volname "Talos CLI" -srcfolder dist -ov -format UDZO talos-cli-macos-amd64.dmg
           echo "ASSET_PATH=talos-cli-macos-amd64.dmg" >> $GITHUB_ENV
 
       - name: Prepare Upload Path (Non-macOS)
