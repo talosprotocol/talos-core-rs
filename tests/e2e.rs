@@ -9,8 +9,8 @@ fn test_e2e_conversation() {
     let provider = RealCryptoProvider;
 
     // 1. Setup Identities
-    let alice_wallet = Wallet::generate(Some("Alice".into()), &provider);
-    let bob_wallet = Wallet::generate(Some("Bob".into()), &provider);
+    let _alice_wallet = Wallet::generate(Some("Alice".into()), &provider);
+    let _bob_wallet = Wallet::generate(Some("Bob".into()), &provider);
 
     // X25519 Identities (simulated from Ed25519 for now or generated separately)
     // The current implementation separates Wallet (Ed25519) from Ratchet (X25519).

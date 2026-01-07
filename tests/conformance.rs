@@ -2,7 +2,7 @@ use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use serde_json::Value;
 use std::fs;
 use talos_core_rs::adapters::crypto::RealCryptoProvider;
-use talos_core_rs::domain::ratchet::{self, KeyPair, PrekeyBundle, Session, SessionManager};
+use talos_core_rs::domain::ratchet::{self, KeyPair, Session, SessionManager};
 use talos_core_rs::ports::crypto::CryptoProvider;
 
 fn b64u_decode(s: &str) -> Vec<u8> {
@@ -75,10 +75,10 @@ impl RatchetHandler {
         let mut alice_eph_priv = [0u8; 32];
         alice_eph_priv.copy_from_slice(&alice_eph_priv_vec);
         // Calculate pub
-        let alice_eph_pub_vec = self.provider.ed25519_public_key(&alice_eph_priv); // Wait, X25519?
-                                                                                   // Ah, X25519 public key derivation is different.
-                                                                                   // But here we need X25519.
-                                                                                   // Assuming trace gives correct keys.
+        let _alice_eph_pub_vec = self.provider.ed25519_public_key(&alice_eph_priv); // Wait, X25519?
+                                                                                    // Ah, X25519 public key derivation is different.
+                                                                                    // But here we need X25519.
+                                                                                    // Assuming trace gives correct keys.
 
         // Actually, we can just use the create_initiator but we can't force the ephemeral key easily without mocking provider.
         // Since I'm using RealCryptoProvider, I can't inject random outcomes.
@@ -96,8 +96,8 @@ impl RatchetHandler {
         // This part is tricky without KDF exposure or duplicating logic.
         // `conformance.rs` previously had `kdf_rk`. I should probably duplicate it here for test purpose.
 
-        let mut root_key = [0u8; 32]; // Initial root key is usually 0 if not 3-DH
-                                      // The previous conformance test seemed to do some custom setup.
+        let _root_key = [0u8; 32]; // Initial root key is usually 0 if not 3-DH
+                                   // The previous conformance test seemed to do some custom setup.
 
         // Re-implementing the manual setup from previous file:
         // let rk = crypto::hkdf_derive(&dh_val, b"x3dh-init", 32); -> This seems custom?
@@ -163,7 +163,7 @@ impl RatchetHandler {
                 };
 
                 if let Some(s) = session {
-                    let out = s.encrypt(&pt, &self.provider).expect("Encrypt failed");
+                    let _out = s.encrypt(&pt, &self.provider).expect("Encrypt failed");
                     // Verify ciphertext matches if needed, but test vectors might have random nonces?
                     // Typically conformance vectors use deterministic nonces orprovide expected ciphertext to check structure.
                 }
@@ -209,35 +209,6 @@ impl RatchetHandler {
                     } else {
                         b64u_decode(h["dh"].as_str().unwrap())
                     };
-                    // Assuming trace is fixed, if it uses `dh`, my serde might fail?
-                    // But here I parse manually.
-
-                    // Actually, if I use `serde_json::from_slice` into `MessageHeader`, it expects correct fields.
-                    // If the trace has `dh`, I might need a custom Deserialize or fix the trace (I can't fix provided trace files easily).
-                    // Or `MessageHeader` uses `#[serde(rename="dh")]`?
-                    // Let's assume `public_key` for now. checking previous file... `alice_dh = b64u_decode(h["dh"]...`
-                    // So traces likely use "dh".
-
-                    // I will add alias to MessageHeader or just handle it here.
-                    // But `Session::decrypt` deserializes `MessageHeader`.
-                    // So `MessageHeader` MUST match the wire format.
-                    // If wire format uses "dh", I must rename field.
-
-                    // Let's check `RatchetState` previous impl...
-                    // It didn't have `MessageHeader` struct explicitly used in `decrypt` in previous `conformance.rs`?
-                    // Ah, `conformance.rs` line 169: `let h: Value = ...`
-
-                    // In `src/domain/ratchet.rs`, `MessageHeader` struct has `public_key`.
-                    // If I change it to `#[serde(alias = "dh")]` it might work?
-                    // Or better, `#[serde(rename = "dh")]` if that's the standard.
-                    // Double Ratchet spec usually calls it `ratchet_key` or just header.
-
-                    // Let's rely on manual parsing here for session creation.
-                    let alice_pub_vec = if let Some(v) = h.get("public_key") {
-                        b64u_decode(v.as_str().unwrap())
-                    } else {
-                        b64u_decode(h["dh"].as_str().unwrap())
-                    };
 
                     let s = bob_mgr
                         .create_responder(&alice_pub_vec, &[], &self.provider)
@@ -256,7 +227,7 @@ impl RatchetHandler {
                         Ok(pt) => {
                             assert_eq!(pt, expected_pt);
                         }
-                        Err(e) => {
+                        Err(_e) => {
                             // Check expected error
                         }
                     }
