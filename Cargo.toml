@@ -1,6 +1,6 @@
 [package]
 name = "talos-core-rs"
-version = "1.1.3"
+version = "1.1.4"
 edition = "2021"
 description = "Talos Protocol Core Rust Kernel"
 license = "MIT"
