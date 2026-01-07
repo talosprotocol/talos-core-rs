@@ -17,7 +17,7 @@ path = "src/libs/lib.rs"
 crate-type = ["cdylib", "rlib"]
 
 [features]
-default = ["extension-module"]
+default = []
 extension-module = ["pyo3/extension-module"]
 
 [dependencies]
