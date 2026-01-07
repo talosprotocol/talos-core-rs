@@ -3,6 +3,10 @@ name = "talos-core-rs"
 version = "0.1.0"
 edition = "2021"
 description = "Talos Protocol Core Rust Kernel"
+license = "MIT"
+repository = "https://github.com/talosprotocol/talos-core-rs"
+homepage = "https://talosprotocol.com"
+keywords = ["blockchain", "cryptography", "protocol"]
 
 [package.metadata.talos]
 protocol_range = "^1.0.0"
