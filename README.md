@@ -76,3 +76,9 @@ cargo build --release
 1.  [Mathematical Security Proof](https://github.com/talosprotocol/talos/wiki/Mathematical-Security-Proof)
 2.  [Talos Contracts](https://github.com/talosprotocol/talos-contracts)
 3.  [Cryptography Guide](https://github.com/talosprotocol/talos/wiki/Cryptography)
+
+## License
+
+Licensed under the Apache License 2.0. See [LICENSE](LICENSE).
+
+Licensed under the Apache License 2.0. See [LICENSE](LICENSE).
