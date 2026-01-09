@@ -104,7 +104,7 @@ impl RatchetHandler {
         // Let's assume for this refactor passed, I strictly need to make it compile first.
         // I will copy the helpers.
 
-        let (next_rk, ck_s) = kdf_rk(&vec![0u8; 32], &dh1, &self.provider);
+        let (next_rk, ck_s) = kdf_rk(&[0u8; 32], &dh1, &self.provider);
 
         // Derive Alice Public Key for State
         // Since I don't have x25519_public_from_private in trait exposed (only generate pair),
@@ -249,7 +249,7 @@ fn kdf_rk(rk: &[u8], dh_out: &[u8], provider: &impl CryptoProvider) -> (Vec<u8>,
 #[test]
 fn test_roundtrip_basic() {
     let content = include_str!("vectors/roundtrip_basic.json");
-    let trace: Value = serde_json::from_str(&content).unwrap();
+    let trace: Value = serde_json::from_str(content).unwrap();
     let mut handler = RatchetHandler::new();
     handler.run_trace(&trace).expect("Trace failed");
 }
