@@ -14,5 +14,6 @@ pub trait CryptoProvider: Send + Sync {
     fn aead_decrypt(&self, key: &[u8; 32], data: &[u8], ad: &[u8]) -> TalosResult<Vec<u8>>;
 
     fn sha256(&self, data: &[u8]) -> [u8; 32];
+    fn hmac_sha256(&self, key: &[u8], data: &[u8]) -> [u8; 32];
     fn random_bytes(&self, dest: &mut [u8]);
 }

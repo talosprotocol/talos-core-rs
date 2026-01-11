@@ -95,6 +95,14 @@ impl CryptoProvider for RealCryptoProvider {
         hasher.finalize().into()
     }
 
+    fn hmac_sha256(&self, key: &[u8], data: &[u8]) -> [u8; 32] {
+        use hmac::Mac;
+        let mut mac =
+            <hmac::Hmac<Sha256> as Mac>::new_from_slice(key).expect("HMAC can take any key length");
+        mac.update(data);
+        mac.finalize().into_bytes().into()
+    }
+
     fn random_bytes(&self, dest: &mut [u8]) {
         rand::thread_rng().fill_bytes(dest);
     }
