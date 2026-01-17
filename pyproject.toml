@@ -6,6 +6,7 @@ build-backend = "maturin"
 name = "talos-core-rs"
 version = "0.1.0"
 requires-python = ">=3.10"
+license = "Apache-2.0"
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
