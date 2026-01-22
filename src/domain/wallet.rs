@@ -4,11 +4,24 @@ use crate::ports::crypto::CryptoProvider;
 const ED25519_MULTICODEC: [u8; 2] = [0xed, 0x01];
 
 /// Wallet for identity and signing.
-#[derive(Debug, Clone)]
+use std::fmt;
+
+/// Wallet for identity and signing.
+#[derive(Clone)]
 pub struct Wallet {
     pub secret_key: [u8; 32],
     pub public_key: [u8; 32],
     pub name: Option<String>,
+}
+
+impl fmt::Debug for Wallet {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Wallet")
+            .field("secret_key", &"<REDACTED>")
+            .field("public_key", &hex::encode(self.public_key))
+            .field("name", &self.name)
+            .finish()
+    }
 }
 
 impl Wallet {
