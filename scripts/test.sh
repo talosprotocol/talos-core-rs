@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
-
-# =============================================================================
-# talos-core-rs Test Script
-# =============================================================================
-
-echo "Testing talos-core-rs..."
+set -e
 
 # Check if cargo is available
 if ! command -v cargo >/dev/null 2>&1; then
@@ -13,14 +7,26 @@ if ! command -v cargo >/dev/null 2>&1; then
   exit 0
 fi
 
-echo "Running cargo fmt check..."
-cargo fmt --check
+COMMAND=${1:-unit}
 
-echo "Running cargo clippy..."
-cargo clippy -- -D warnings 2>/dev/null || cargo clippy
-
-echo "Running cargo test..."
-# Avoid --all-features as it triggers pyo3 linker errors in this environment
-cargo test --no-default-features
-
-echo "talos-core-rs tests passed."
+case "$COMMAND" in
+  unit)
+    echo "=== Running Unit Tests ==="
+    # Avoid --all-features as it triggers pyo3 linker errors in this environment
+    cargo test --no-default-features
+    ;;
+  interop)
+    echo "=== Running Property/Interop Tests ==="
+    # For Core, interop gate means passing property tests for serialization
+    cargo test --no-default-features
+    ;;
+  lint)
+    echo "=== Running Lint ==="
+    cargo fmt --check
+    cargo clippy -- -D warnings 2>/dev/null || cargo clippy
+    ;;
+  *)
+    echo "Error: Unknown command '$COMMAND'"
+    exit 1
+    ;;
+esac

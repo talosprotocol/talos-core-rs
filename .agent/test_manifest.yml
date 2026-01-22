@@ -1,0 +1,23 @@
+manifest_version: v1
+repo_id: core
+entrypoints:
+  unit: "scripts/test.sh unit"
+  lint: "scripts/test.sh lint"
+interop:
+  enabled: true
+  command: "scripts/test.sh interop"
+  contracts_pin:
+    type: "artifact"
+    name: "talos-contracts"
+    version: "1.2.3"
+  required: true
+coverage:
+  tool: "tarpaulin"
+  reports:
+    xml: "cobertura.xml"
+  thresholds:
+    unit:
+      line: 0.80
+    critical_paths:
+      - path: "src/crypto/**"
+        line: 1.00
