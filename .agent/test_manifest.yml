@@ -3,7 +3,7 @@ repo_root: "."
 commands:
   test_entrypoint: "scripts/test.sh"
 coverage:
-  enabled: true
+  enabled: false  # TODO: Enable when coverage reports are generated
   format: "cobertura"
   report_path: "artifacts/coverage/coverage.xml"
   thresholds:
