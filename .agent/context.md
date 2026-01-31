@@ -1,8 +1,8 @@
 <!--
 GENERATED FILE. Do not edit directly in submodules.
 Source: AGENTS.md
-Source revision: e392e46
-Generated at: 2026-01-31T19:24:13+00:00
+Source revision: dff567f
+Generated at: 2026-01-31T20:16:09+00:00
 -->
 
 # Repository Guidelines
