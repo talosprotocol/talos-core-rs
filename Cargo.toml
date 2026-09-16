@@ -37,7 +37,7 @@ sha2 = "0.10"
 rand = "0.8"
 bs58 = "0.5"
 x25519-dalek = { version = "2.0", features = ["static_secrets", "serde"] }
-hkdf = "0.12"
+hkdf = "0.13"
 chacha20poly1305 = "0.10"
 hmac = "0.12"
 serde_jcs = "0.1.0"
