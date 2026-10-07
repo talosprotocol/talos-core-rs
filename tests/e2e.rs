@@ -2,29 +2,22 @@ use talos_core_rs::adapters::crypto::RealCryptoProvider;
 use talos_core_rs::domain::ratchet::SessionManager;
 use talos_core_rs::domain::wallet::Wallet;
 use talos_core_rs::encoding;
-use talos_core_rs::ports::crypto::CryptoProvider;
 
 #[test]
 fn test_e2e_conversation() {
     let provider = RealCryptoProvider;
 
     // 1. Setup Identities
-    let _alice_wallet = Wallet::generate(Some("Alice".into()), &provider);
-    let _bob_wallet = Wallet::generate(Some("Bob".into()), &provider);
+    let alice_wallet = Wallet::generate(Some("Alice".into()), &provider);
+    let bob_wallet = Wallet::generate(Some("Bob".into()), &provider);
 
-    // X25519 Identities (simulated from Ed25519 for now or generated separately)
-    // The current implementation separates Wallet (Ed25519) from Ratchet (X25519).
-    // In a real app, we'd sign the X25519 key with the Ed25519 key.
-    // Here we just generate fresh X25519 identity keys for the ratchet session.
-
-    let (alice_id_pub, alice_id_priv) = provider.x25519_generate();
-    let (bob_id_pub, bob_id_priv) = provider.x25519_generate();
-
-    let alice_mgr = SessionManager::new(alice_id_pub, alice_id_priv);
-    let mut bob_mgr = SessionManager::new(bob_id_pub, bob_id_priv);
+    let alice_mgr = SessionManager::new(alice_wallet.public_key, alice_wallet.secret_key);
+    let mut bob_mgr = SessionManager::new(bob_wallet.public_key, bob_wallet.secret_key);
 
     // 2. Bob publishes a Prekey Bundle
-    let bob_bundle = bob_mgr.get_prekey_bundle(&provider);
+    let bob_bundle = bob_mgr
+        .get_prekey_bundle(&provider)
+        .expect("Bob failed to create a signed prekey bundle");
 
     // 3. Alice initiates session
     let mut alice_session = alice_mgr

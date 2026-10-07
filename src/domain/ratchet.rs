@@ -251,6 +251,7 @@ pub struct SessionManager {
     identity: KeyPair,
     _prekey_bundle: Option<PrekeyBundle>,
     signed_prekey_pair: Option<KeyPair>,
+    signed_prekey_signature: Option<[u8; 64]>,
 }
 
 impl SessionManager {
@@ -262,32 +263,60 @@ impl SessionManager {
             },
             _prekey_bundle: None,
             signed_prekey_pair: None,
+            signed_prekey_signature: None,
         }
     }
 
-    // Conformance helper to inject SPK
+    // Conformance helper to inject a deterministic SPK from a shared vector.
     pub fn set_signed_prekey(
         &mut self,
         spk_public: [u8; 32],
         spk_private: [u8; 32],
-        _sig: Vec<u8>,
-    ) {
+        signature: Vec<u8>,
+        provider: &impl CryptoProvider,
+    ) -> TalosResult<()> {
+        let signature: [u8; 64] = signature
+            .try_into()
+            .map_err(|_| TalosError::Protocol("Invalid signed prekey signature length".into()))?;
+        if provider.ed25519_public_key(&self.identity.private) != self.identity.public {
+            return Err(TalosError::Protocol(
+                "Identity keypair does not match".into(),
+            ));
+        }
+        if !provider.ed25519_verify(&spk_public, &signature, &self.identity.public) {
+            return Err(TalosError::Protocol(
+                "Invalid signed prekey signature".into(),
+            ));
+        }
+
         self.signed_prekey_pair = Some(KeyPair {
             public: spk_public,
             private: spk_private,
         });
-        // We could also update prekey_bundle if needed, but not strictly required for conformance test usage
+        self.signed_prekey_signature = Some(signature);
+        Ok(())
     }
 
-    pub fn get_prekey_bundle(&mut self, provider: &impl CryptoProvider) -> PrekeyBundle {
+    pub fn get_prekey_bundle(
+        &mut self,
+        provider: &impl CryptoProvider,
+    ) -> TalosResult<PrekeyBundle> {
+        if provider.ed25519_public_key(&self.identity.private) != self.identity.public {
+            return Err(TalosError::Protocol(
+                "Identity keypair does not match".into(),
+            ));
+        }
+
         if let Some(pair) = &self.signed_prekey_pair {
-            // Return existing if already set (simplification)
-            return PrekeyBundle {
+            let signature = self.signed_prekey_signature.ok_or_else(|| {
+                TalosError::Protocol("Signed prekey signature is unavailable".into())
+            })?;
+            return Ok(PrekeyBundle {
                 identity_key: self.identity.public,
                 signed_prekey: pair.public,
-                prekey_signature: vec![0u8; 64], // TODO: real signature
+                prekey_signature: signature.to_vec(),
                 one_time_prekey: None,
-            };
+            });
         }
 
         let (spk_pub, spk_priv) = provider.x25519_generate();
@@ -296,13 +325,15 @@ impl SessionManager {
             private: spk_priv,
         };
         self.signed_prekey_pair = Some(pair);
+        let signature = provider.ed25519_sign(&spk_pub, &self.identity.private);
+        self.signed_prekey_signature = Some(signature);
 
-        PrekeyBundle {
+        Ok(PrekeyBundle {
             identity_key: self.identity.public,
             signed_prekey: spk_pub,
-            prekey_signature: vec![0u8; 64],
+            prekey_signature: signature.to_vec(),
             one_time_prekey: None,
-        }
+        })
     }
 
     pub fn create_initiator(
@@ -310,6 +341,21 @@ impl SessionManager {
         remote_bundle: &PrekeyBundle,
         provider: &impl CryptoProvider,
     ) -> TalosResult<Session> {
+        let signature: [u8; 64] = remote_bundle
+            .prekey_signature
+            .as_slice()
+            .try_into()
+            .map_err(|_| TalosError::Protocol("Invalid signed prekey signature length".into()))?;
+        if !provider.ed25519_verify(
+            &remote_bundle.signed_prekey,
+            &signature,
+            &remote_bundle.identity_key,
+        ) {
+            return Err(TalosError::Protocol(
+                "Invalid signed prekey signature".into(),
+            ));
+        }
+
         let (ephemeral_pub, ephemeral_priv) = provider.x25519_generate();
 
         // DH between our ephemeral and their signed prekey

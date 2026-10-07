@@ -66,7 +66,21 @@ impl RatchetHandler {
                 .unwrap(),
         );
 
-        bob_mgr.set_signed_prekey(spk_pub, spk_priv, spk_sig);
+        bob_mgr
+            .set_signed_prekey(spk_pub, spk_priv, spk_sig, &self.provider)
+            .map_err(|error| format!("invalid Bob signed prekey: {error}"))?;
+        let verified_bundle = bob_mgr
+            .get_prekey_bundle(&self.provider)
+            .map_err(|error| format!("failed to return verified Bob prekey: {error}"))?;
+        if verified_bundle.prekey_signature
+            != b64u_decode(
+                trace["bob"]["prekey_bundle"]["prekey_signature"]
+                    .as_str()
+                    .unwrap(),
+            )
+        {
+            return Err("Rust prekey signature differs from the shared vector".into());
+        }
 
         // CREATE ALICE SESSION MANUALLY (Since create_initiator uses random eph key)
         // We need to inject the specific ephemeral key from trace
